@@ -6,7 +6,8 @@ public class CharaController : MonoBehaviour
 {
     const string axisHorizontal = "Horizontal";
     const string axisVertical = "Vertical";
-    const string layerMaskStopMovement = "StopMovement";
+    const string layerMaskWall = "Wall";
+    const string layerMaskCharacter = "Character";
 
     public Transform previousPosition;
     public Transform followPoint;
@@ -18,7 +19,9 @@ public class CharaController : MonoBehaviour
     bool isPlayedCharacter = false;
     bool stopPlayedCharacter = false;
 
-    LayerMask stopMovement;
+    LayerMask wallLayer;
+    LayerMask characterLayer;
+
     Transform movePoint;
 
     public void StartControl() {
@@ -67,8 +70,12 @@ public class CharaController : MonoBehaviour
         return axis == axisVertical ? new Vector3(0f, Input.GetAxisRaw(axis), 0f) : new Vector3(Input.GetAxisRaw(axis), 0f, 0f);
     }
 
-    bool IsStopped(string axis) {
-        return axis == null ? false : Physics2D.OverlapCircle(movePoint.position + GetAxisVector(axis), .2f, stopMovement);
+    bool IsFacingWall(string axis) {
+        return axis == null ? false : Physics2D.OverlapCircle(movePoint.position + GetAxisVector(axis), .2f, wallLayer);
+    }
+
+    bool IsFacingCharacter(string axis) {
+        return axis == null ? false : Physics2D.OverlapCircle(movePoint.position + GetAxisVector(axis), .2f, characterLayer);
     }
 
     void UpdateMovePointPosition() {
@@ -78,7 +85,7 @@ public class CharaController : MonoBehaviour
                 Reset();
             } else {
                 string axis = Mathf.Abs(Input.GetAxisRaw(axisHorizontal)) == 1f ? axisHorizontal : axisVertical;
-                if (!IsStopped(axis)) {
+                if (!IsFacingWall(axis) && !IsFacingCharacter(axis)) {
                     followPoint.position = movePoint.position;
                     movePoint.position += GetAxisVector(axis);
                 }
@@ -94,7 +101,8 @@ public class CharaController : MonoBehaviour
     }
 
     void Start() {
-        stopMovement = LayerMask.GetMask(layerMaskStopMovement);
+        wallLayer = LayerMask.GetMask(layerMaskWall);
+        characterLayer = LayerMask.GetMask(layerMaskCharacter);
     }
 
     void Update() {
