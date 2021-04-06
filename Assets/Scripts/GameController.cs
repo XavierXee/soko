@@ -1,41 +1,38 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-public class GameController : MonoBehaviour
+public class GameController : Singleton<GameController>
 {
+    
+    public Transform PointerPrefab;
+    [HideInInspector] public Transform Pointer;
 
-    public GameObject chara_0;
-    public GameObject chara_1;
-    public GameObject chara_2;
-    GameObject[] characterArray;
+    public GameObject[] CharactersArray;
 
-    CharaController characterController;
-    int currentControlledCharacterIndex = 0;
+    private int CurrentControlledCharacterIndex = 0;
 
-	void ChangeControlledCharacter() {
-        if (Input.GetKeyDown("space")) {
-        	characterArray[currentControlledCharacterIndex].GetComponent<CharaController>().StopControl();
-			currentControlledCharacterIndex = currentControlledCharacterIndex == characterArray.Length - 1 ? 0 : currentControlledCharacterIndex + 1;
-			characterArray[currentControlledCharacterIndex].GetComponent<CharaController>().StartControl();
+    private void Awake() {
+        if (Pointer == null) {
+            Pointer = Instantiate(PointerPrefab, transform.position, transform.rotation);
         }
     }
 
-    void MakeCharacterFollow() {
-        if (Input.GetKeyDown("f")) {
-        	Transform followPoint = characterArray[currentControlledCharacterIndex].GetComponent<CharaController>().GetFollowPoint();
-        	characterArray[1].GetComponent<CharaController>().SetExternalFollowPoint(followPoint);
-        	characterArray[1].GetComponent<CharaController>().StartFollow();
+    private void Start() {
+        CharactersArray[CurrentControlledCharacterIndex].GetComponent<CharaController>().StartControl();
+    }
+
+    public void MoveControlledCharacter(InputAction.CallbackContext Context) {
+        CharactersArray[CurrentControlledCharacterIndex].GetComponent<CharaController>().SetInputValue(Context.ReadValue<Vector2>().x, Context.ReadValue<Vector2>().y);
+    }
+
+    public void SwitchControlledCharacter(InputAction.CallbackContext Context) {
+        if (Context.performed) {
+            CharactersArray[CurrentControlledCharacterIndex].GetComponent<CharaController>().StopControl();
+            CurrentControlledCharacterIndex = CurrentControlledCharacterIndex == CharactersArray.Length - 1 ? 0 : CurrentControlledCharacterIndex + 1;
+            CharactersArray[CurrentControlledCharacterIndex].GetComponent<CharaController>().StartControl();
         }
     }
 
-    void Start() {
-    	characterArray = new GameObject[] {chara_0, chara_1, chara_2};
-    	characterArray[currentControlledCharacterIndex].GetComponent<CharaController>().StartControl();
-    }
-
-    void Update() {
-    	ChangeControlledCharacter();
-    	MakeCharacterFollow();
-    }
 }

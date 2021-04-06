@@ -1,111 +1,73 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class CharaController : MonoBehaviour
 {
-    const string axisHorizontal = "Horizontal";
-    const string axisVertical = "Vertical";
-    const string layerMaskWall = "Wall";
-    const string layerMaskCharacter = "Character";
+    private Transform Pointer;
 
-    public Transform previousPosition;
-    public Transform followPoint;
-    public Transform externalFollowPoint;
+    private bool IsControlled;
 
-	public float moveSpeed = 5f;
-    public bool isFollowing = false;
+    private float InputX;
+    private float InputY;
 
-    bool isPlayedCharacter = false;
-    bool stopPlayedCharacter = false;
+    private bool isLastInputHorizontal;
 
-    LayerMask wallLayer;
-    LayerMask characterLayer;
+    private Vector3 GetVectorFromInput() {
+        if (Mathf.Abs(InputX) > Mathf.Abs(InputY)) {
+            isLastInputHorizontal = true;
+            return new Vector3(Mathf.Round(InputX), 0f, 0f);
+        } else if (Mathf.Abs(InputX) < Mathf.Abs(InputY)) {
+            isLastInputHorizontal = false;
+            return new Vector3(0f, Mathf.Round(InputY), 0f);
+        } else {
+            if (isLastInputHorizontal) {
+                return new Vector3(0f, Mathf.Round(InputY), 0f);
+            } else {
+                return new Vector3(Mathf.Round(InputX), 0f, 0f);
+            }
+        }
+    }
 
-    Transform movePoint;
+    private bool IsBlocked() {
+        return Physics2D.OverlapCircle(Pointer.position + GetVectorFromInput(), .2f, Global.Instance.LayerMaskWall) ||
+            Physics2D.OverlapCircle(Pointer.position + GetVectorFromInput(), .2f, Global.Instance.LayerMaskCharacter);
+    }
+
+    private void IsFacingCharacter() {
+
+        Debug.Log(Physics2D.OverlapCircle(Pointer.position + GetVectorFromInput(), .2f, Global.Instance.LayerMaskCharacter));
+    }
+
+    private void Start() {
+        Pointer = GameController.Instance.Pointer;
+    }
 
     public void StartControl() {
-        Init();
+        Pointer.position = transform.position;
+        IsControlled = true;
     }
 
     public void StopControl() {
-        stopPlayedCharacter = true;
+        Pointer = null;
+        IsControlled = false;
     }
 
-    public void StartFollow() {
-        isFollowing = true;
-        Init();
-    }
-
-    public void StopFollow() {
-        isFollowing = false;
-    }
-
-    public void SetExternalFollowPoint(Transform extFollowPoint) {
-        externalFollowPoint = extFollowPoint;
-    }
-
-    public Transform GetFollowPoint() {
-        return followPoint;
-    }
-
-    void Init() {
-        movePoint = isFollowing ? externalFollowPoint : transform.GetChild(0);
-        followPoint = transform.GetChild(1);
-        movePoint.position = transform.position;
-        movePoint.parent = null;
-        followPoint.parent = null;
-        isPlayedCharacter = true;
-        stopPlayedCharacter = false;
-    }
-
-    void Reset() {
-        movePoint.parent = transform;
-        followPoint.parent = transform;
-        isPlayedCharacter = false;
-        stopPlayedCharacter = false;
-    }
-
-    Vector3 GetAxisVector(string axis) {
-        return axis == axisVertical ? new Vector3(0f, Input.GetAxisRaw(axis), 0f) : new Vector3(Input.GetAxisRaw(axis), 0f, 0f);
-    }
-
-    bool IsFacingWall(string axis) {
-        return axis == null ? false : Physics2D.OverlapCircle(movePoint.position + GetAxisVector(axis), .2f, wallLayer);
-    }
-
-    bool IsFacingCharacter(string axis) {
-        return axis == null ? false : Physics2D.OverlapCircle(movePoint.position + GetAxisVector(axis), .2f, characterLayer);
-    }
-
-    void UpdateMovePointPosition() {
-        if (Vector3.Distance(transform.position, movePoint.position) == 0) {
-            previousPosition = movePoint;
-            if (stopPlayedCharacter) {
-                Reset();
-            } else {
-                string axis = Mathf.Abs(Input.GetAxisRaw(axisHorizontal)) == 1f ? axisHorizontal : axisVertical;
-                if (!IsFacingWall(axis) && !IsFacingCharacter(axis)) {
-                    followPoint.position = movePoint.position;
-                    movePoint.position += GetAxisVector(axis);
+    private void Update() {
+        IsFacingCharacter();
+        if (IsControlled) {
+            transform.position = Vector3.MoveTowards(transform.position, Pointer.position, Global.Instance.MoveSpeed * Time.deltaTime);
+            if (Vector3.Distance(transform.position, Pointer.position) == 0) {
+                if (!IsBlocked()) {
+                    Pointer.position += GetVectorFromInput();
                 }
             }
         }
     }
 
-    void MoveCharacterToGrid() {
-        if (isPlayedCharacter) {
-            transform.position = Vector3.MoveTowards(transform.position, movePoint.position, moveSpeed * Time.deltaTime);
-            UpdateMovePointPosition();
-        }
-    }
-
-    void Start() {
-        wallLayer = LayerMask.GetMask(layerMaskWall);
-        characterLayer = LayerMask.GetMask(layerMaskCharacter);
-    }
-
-    void Update() {
-        MoveCharacterToGrid();
+    public void SetInputValue(float InputXValue, float InputYValue) {
+        InputX = InputXValue;
+        InputY = InputYValue;
     }
 }
