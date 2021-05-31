@@ -12,7 +12,9 @@ GameObject:
   - component: {fileID: 4383790499450275152}
   - component: {fileID: 4383790499450275153}
   - component: {fileID: 4383790499450275154}
-  - component: {fileID: 4383790499450275118}
+  - component: {fileID: 3368464352413680601}
+  - component: {fileID: 1344831233091784677}
+  - component: {fileID: 4303180499495877440}
   m_Layer: 6
   m_Name: Chara
   m_TagString: Untagged
@@ -133,7 +135,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &4383790499450275118
+--- !u!114 &3368464352413680601
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -145,4 +147,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64b4bc626639a496c9c7e1b8b5fc7342, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsControlled: 0
+--- !u!114 &1344831233091784677
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4383790499450275155}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 097db034eba23483288b29edc024b4c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PointerPrefabBlue: {fileID: 8049366195044866386, guid: 0f661f626d5734711af3e4cb53439312,
+    type: 3}
+  MovePoint: {fileID: 0}
+--- !u!114 &4303180499495877440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4383790499450275155}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 636994b88be46484f8a523f2fe80ce8c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PointerPrefabRed: {fileID: 8049366195044866386, guid: 959aaf8c8441349edba3fd519db5772f,
+    type: 3}
+  InteractPoint: {fileID: 0}
