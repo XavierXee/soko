@@ -3,41 +3,51 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Move : MonoBehaviour
+public class Move : Action
 {
-    [HideInInspector] public Transform MovePoint;
-    public Transform PointerPrefabBlue;
 
     public bool Moving;
+    private bool SendEvent;
+    private Vector3 LastDirection;
+    private Vector3 BlockedPosition;
 
-    private bool IsBlocked() {
-        return Physics2D.OverlapCircle(MovePoint.position + InputHandler.Instance.GetVector(), .2f, Global.Instance.LayerMaskWall) ||
-            Physics2D.OverlapCircle(MovePoint.position + InputHandler.Instance.GetVector(), .2f, Global.Instance.LayerMaskCharacter);
-    }
+    public Vector3 Direction;
 
     private void OnEnable() {
-        if (MovePoint == null) {
-            MovePoint = Instantiate(PointerPrefabBlue, transform.position, transform.rotation);
-        } else {
-            MovePoint.position = transform.position;
-        }
+        // EventHandler.Instance.OnReplicateNextPosition += onBlockNextDirectionFromReplicate;
     }
 
-    // private void OnDisable()
-    // {
-    //     if (MovePoint != null) {
-    //         Destroy(MovePoint);
-    //     }
+    // private void OnDisable() {
+    //     EventHandler.Instance.OnReplicateNextPosition -= onBlockNextDirectionFromReplicate;
     // }
 
-    private void Update() {
-        Moving = true;
-        transform.position = Vector3.MoveTowards(transform.position, MovePoint.position, Global.Instance.MoveSpeed * Time.deltaTime);
-        if (Vector3.Distance(transform.position, MovePoint.position) == 0) {
-            Moving = false;
-            if (!IsBlocked()) {
-                MovePoint.position += InputHandler.Instance.GetVector();
-            }
-        }
-    }
+    // private void Update() {
+    //     transform.position = Vector3.MoveTowards(transform.position, Pointer.position, Global.Instance.MoveSpeed * Time.deltaTime);
+    //     if (Vector3.Distance(transform.position, Pointer.position) == 0) {
+    //         // Moving = false;
+    //         // if (SendEvent) {
+    //             // SendMoveDoneEvent();
+    //             // SendEvent = false;
+    //         // }
+    //         if (!IsBlocked(Pointer.position + InputHandler.Instance.GetVector()) &&
+    //             !IsBlocked(BlockedPosition)
+    //             ) {
+    //             LastDirection = InputHandler.Instance.GetVector();
+    //             Pointer.position += LastDirection;
+    //         }
+    //     } 
+    //     // else {
+    //     //     Moving = true;
+    //     //     SendEvent = true;
+    //     // }
+    // }
+
+    // private void SendMoveDoneEvent() {
+    //     EventHandler.Instance.MoveDone(LastDirection);
+    // }
+
+    // private void onBlockNextDirectionFromReplicate(Vector3 Position) {
+    //     BlockedPosition = Position;
+    // }
+
 }

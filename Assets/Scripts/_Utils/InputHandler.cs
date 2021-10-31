@@ -2,9 +2,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// public class InputObject{
+//     public string mType;
+//     public Vector3 mDirection;
+
+//     public string Type {
+//         get {
+//             return mType;
+//         }
+//     }
+
+//     public string Direction {
+//         get {
+//             return mDirection;
+//         }
+//     }
+
+//     constructor(string type, Vector3 direction) {
+//         mType = type;
+//         mDirection = direction;
+//     }   
+//  }
+
 public class InputHandler : Singleton<InputHandler>
 {
-
 	private float InputX;
     private float InputY;
 
@@ -14,6 +35,10 @@ public class InputHandler : Singleton<InputHandler>
         InputX = InputXValue;
         InputY = InputYValue;
     }
+
+    // public InputObject GetInput() {
+    //     return new InputObject(GetVector());
+    // }
 
     public Vector3 GetVector() {
     	if (!(Mathf.Abs(InputX) == 0 && Mathf.Abs(InputY) == 0)) {

@@ -20,10 +20,10 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
                     m_Instance = (T)FindObjectOfType(typeof(T));
  
                     if (m_Instance == null) {
-                        var singletonObject = new GameObject();
-                        m_Instance = singletonObject.AddComponent<T>();
-                        singletonObject.name = typeof(T).ToString() + " (Singleton)";
-                        DontDestroyOnLoad(singletonObject);
+                        GameObject SingletonObject = new GameObject();
+                        m_Instance = SingletonObject.AddComponent<T>();
+                        SingletonObject.name = typeof(T).ToString() + " (Singleton)";
+                        DontDestroyOnLoad(SingletonObject);
                     }
                 }
                 return m_Instance;
@@ -31,6 +31,11 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
         }
     }
 
+    public static T Current {
+        get {
+            return Instance;
+        }
+    }
  
     private void OnApplicationQuit() {
         m_ShuttingDown = true;

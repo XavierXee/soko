@@ -7,18 +7,18 @@ public class Interact : MonoBehaviour
     [HideInInspector] public Transform InteractPoint;
     public Transform PointerPrefabRed;
 
-    private void OnEnable() {
-        if (!GetComponent<Move>().enabled) {
-            GetComponent<Move>().enabled = true;
-        }
+    // private void OnEnable() {
+    //     if (!GetComponent<Move>().enabled) {
+    //         GetComponent<Move>().enabled = true;
+    //     }
 
-        if (InteractPoint == null) {
-            InteractPoint = Instantiate(PointerPrefabRed, transform.position, transform.rotation);
-            InteractPoint.parent = transform;
-        } else {
-            InteractPoint.position = transform.position;
-        }
-    }
+    //     if (InteractPoint == null) {
+    //         InteractPoint = Instantiate(PointerPrefabRed, transform.position, transform.rotation);
+    //         InteractPoint.parent = transform;
+    //     } else {
+    //         InteractPoint.position = transform.position;
+    //     }
+    // }
 
     // private void OnDisable()
     // {
@@ -27,11 +27,11 @@ public class Interact : MonoBehaviour
     //     }
     // }
 
-    private void Update() {
-        if (!GetComponent<Move>().Moving) {
-            if (InputHandler.Instance.GetVector() != Vector3.zero) {
-                InteractPoint.position = transform.position + InputHandler.Instance.GetVector();
-            }
-        }
-    }
+    // private void Update() {
+    //     if (!GetComponent<Move>().Moving) {
+    //         if (InputHandler.Instance.GetVector() != Vector3.zero) {
+    //             InteractPoint.position = transform.position + InputHandler.Instance.GetVector();
+    //         }
+    //     }
+    // }
 }

@@ -14,7 +14,10 @@ public class GameController : Singleton<GameController>
     }
 
     private void Start() {
-        CharactersArray[CurrentControlledCharacterIndex].GetComponent<CharaController>().EnableAllActions();
+        // CharactersArray[CurrentControlledCharacterIndex].GetComponent<CharaController>().EnableAction("Move");
+        // CharactersArray[CurrentControlledCharacterIndex].GetComponent<CharaController>().EnableAction("Interact");
+
+        // CharactersArray[1].GetComponent<CharaController>().EnableAction("Replicate");
     }
 
     public void onDirectionInput(InputAction.CallbackContext Context) {
@@ -23,9 +26,9 @@ public class GameController : Singleton<GameController>
 
     public void SwitchControlledCharacter(InputAction.CallbackContext Context) {
         if (Context.performed) {
-            CharactersArray[CurrentControlledCharacterIndex].GetComponent<CharaController>().DisableAllActions();
-            CurrentControlledCharacterIndex = CurrentControlledCharacterIndex == CharactersArray.Length - 1 ? 0 : CurrentControlledCharacterIndex + 1;
-            CharactersArray[CurrentControlledCharacterIndex].GetComponent<CharaController>().EnableAllActions();
+            // CharactersArray[CurrentControlledCharacterIndex].GetComponent<CharaController>().DisableAllActions();
+            // CurrentControlledCharacterIndex = CurrentControlledCharacterIndex == CharactersArray.Length - 1 ? 0 : CurrentControlledCharacterIndex + 1;
+            // CharactersArray[CurrentControlledCharacterIndex].GetComponent<CharaController>().EnableAllActions();
         }
     }
 
